@@ -1,0 +1,19 @@
+image: "ruby:2.5"
+
+
+cache:
+  paths:
+    - vendor/ruby
+
+before_script:
+  - ruby -v
+  - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
+rubocop:
+  script:
+    - rubocop
+
+rspec:
+  script:
+    - rspec spec
+
+
