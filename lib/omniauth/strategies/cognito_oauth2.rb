@@ -1,8 +1,15 @@
-require "omniauth/cognito_oauth2/version"
+# frozen_string_literal: true
+
+require 'jwt'
+require 'omniauth/strategies/oauth2'
+require 'uri'
 
 module OmniAuth
-  module CognitoOauth2
+  module Strategies
+    class CognitoOauth2 < OmniAuth::Strategies::OAuth2
+
+    end
+
     class Error < StandardError; end
-    # Your code goes here...
   end
 end
