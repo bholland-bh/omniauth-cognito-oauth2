@@ -1,10 +1,8 @@
-require "omniauth/cognito/oauth2/version"
+require "omniauth/cognito_oauth2/version"
 
-module Omniauth
-  module Cognito
-    module Oauth2
-      class Error < StandardError; end
-      # Your code goes here...
-    end
+module OmniAuth
+  module CognitoOauth2
+    class Error < StandardError; end
+    # Your code goes here...
   end
 end
