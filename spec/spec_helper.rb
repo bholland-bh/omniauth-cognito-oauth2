@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "omniauth/cognito/oauth2"
+require "omniauth/strategies/cognito_oauth2"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
