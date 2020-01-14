@@ -7,7 +7,6 @@ require 'uri'
 module OmniAuth
   module Strategies
     class CognitoOauth2 < OmniAuth::Strategies::OAuth2
-
     end
 
     class Error < StandardError; end
