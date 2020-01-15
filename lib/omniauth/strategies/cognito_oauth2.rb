@@ -10,9 +10,9 @@ module OmniAuth
     class CognitoOauth2 < OmniAuth::Strategies::OAuth2
       option :name, 'cognito_oauth2'
 
-      option :client_options,
-        authorize_url: '/oauth2/authorize',
-        token_url: '/oauth2/token'
+      option  :client_options,
+              authorize_url: '/oauth2/authorize',
+              token_url: '/oauth2/token'
 
       uid { raw_info['sub'] }
 
