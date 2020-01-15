@@ -6,20 +6,19 @@ require 'uri'
 
 module OmniAuth
   module Strategies
+    # Standard requirements for implementing Oauth2
     class CognitoOauth2 < OmniAuth::Strategies::OAuth2
       option :name, 'cognito_oauth2'
 
-      option :client_options, {
-        :site => "https://bookingbug-dev.auth.eu-west-1.amazoncognito.com",
-        :authorize_url => "/oauth2/authorize",
-        :token_url => "/oauth2/token"
-      }
+      option :client_options,
+        authorize_url: '/oauth2/authorize',
+        token_url: '/oauth2/token'
 
-      uid { raw_info["sub"] }
+      uid { raw_info['sub'] }
 
       info do
         {
-          email: raw_info["email"]
+          email: raw_info['email']
         }
       end
 
