@@ -1,8 +1,7 @@
 PATH
   remote: .
   specs:
-    omniauth-cognito-oauth2 (0.1.0)
-      jwt (~> 2.2)
+    omniauth-cognito-oauth2 (0.1.1)
       omniauth-oauth2 (~> 1.6)
 
 GEM
@@ -38,7 +37,7 @@ GEM
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
-    rack (2.0.8)
+    rack (2.1.1)
     rainbow (3.0.0)
     rake (13.0.1)
     rspec (3.9.0)
@@ -75,4 +74,4 @@ DEPENDENCIES
   rubocop (~> 0.78)
 
 BUNDLED WITH
-   2.1.2
+   2.1.4
