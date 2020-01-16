@@ -23,7 +23,7 @@ You will need:
    - Check at least the `Authorization code grant` OAuth flow option
    - Check at least the `openid` and `email` OAuth scopes
    - *Don't* set up your App Client with a 'Client Secret' because at the moment they don't work and won't allow you to authenticate.
- - For development, you'll need to be running your app with SSL enabled, because Cognito user pool App Client callback and signout URLs only allow HTTPS URLs. This unaffiliated [blog post](https://madeintandem.com/blog/rails-local-development-https-using-self-signed-ssl-certificate/) might help
+ - For development, you'll need to be running your app with SSL enabled, because Cognito user pool App Client callback and signout URLs only allow HTTPS URLs. This unaffiliated [blog post](https://madeintandem.com/blog/rails-local-development-https-using-self-signed-ssl-certificate/) details steps on obtaining a self-signed SSL certificate and running rails in SSL mode while referencing the cert
  - A config variable on your dev machine which contains your domain - something like `COGNITO_USER_POOL_DOMAIN=https://your_user_pool_domain.auth.us-west-1.amazoncognito.com` for your variable, and then `Rails.configuration.local_settings['COGNITO_USER_POOL_DOMAIN']` in your code (if using Rails)
  - A config variable on your dev machine which contains your App Client ID - something like `COGNITO_CLIENT_ID=your_app_client_id` for your variable, and then `Rails.configuration.local_settings['COGNITO_CLIENT_ID']` in your code (if using Rails)
 
