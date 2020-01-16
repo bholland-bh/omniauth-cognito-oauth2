@@ -15,11 +15,17 @@ Then `bundle install`
 
 You will need:
 
- - an AWS Cognito user pool
- - a domain setup for your user pool
- - an App Client set up for your user pool, exposing at least `openid` and `email`. (Don't set up your App Client with a 'Client Secret' because at the moment they don't work and won't allow you to authenticate.)
- - a config variable on your dev machine which contains your domain - something like `COGNITO_USER_POOL_DOMAIN=https://your_user_pool_domain.auth.us-west-1.amazoncognito.com` for your variable, and then `Rails.configuration.local_settings['COGNITO_USER_POOL_DOMAIN']` in your code (if using Rails of course)
- - a config variable on your dev machine which contains your App Client ID - something like `COGNITO_CLIENT_ID=your_app_client_id` for your variable, and then `Rails.configuration.local_settings['COGNITO_CLIENT_ID']` in your code (if using Rails of course)
+ - An AWS Cognito user pool
+ - A domain setup for your user pool
+ - An App Client set up for your user pool:
+   - Callback URL will look something like `https://localhost:3000/users/auth/cognito_oauth2/callback` (standard with a Devise User model)
+   - Signout URL will look something like `https://localhost:3000/users/sign_out` (standard with a Devise User model)
+   - Check at least the `Authorization code grant` OAuth flow option
+   - Check at least the `openid` and `email` OAuth scopes
+   - *Don't* set up your App Client with a 'Client Secret' because at the moment they don't work and won't allow you to authenticate.
+ - For development, you'll need to be running your app with SSL enabled, because Cognito user pool App Client callback and signout URLs only allow HTTPS URLs. This unaffiliated [blog post](https://madeintandem.com/blog/rails-local-development-https-using-self-signed-ssl-certificate/) might help
+ - A config variable on your dev machine which contains your domain - something like `COGNITO_USER_POOL_DOMAIN=https://your_user_pool_domain.auth.us-west-1.amazoncognito.com` for your variable, and then `Rails.configuration.local_settings['COGNITO_USER_POOL_DOMAIN']` in your code (if using Rails)
+ - A config variable on your dev machine which contains your App Client ID - something like `COGNITO_CLIENT_ID=your_app_client_id` for your variable, and then `Rails.configuration.local_settings['COGNITO_CLIENT_ID']` in your code (if using Rails)
 
 ## Usage
 
