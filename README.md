@@ -17,9 +17,9 @@ You will need:
 
  - an AWS Cognito user pool
  - a domain setup for your user pool
- - an environment variable on your dev machine which contains your domain - something like `COGNITO_USER_POOL_DOMAIN=https://your_user_pool_domain.auth.us-west-1.amazoncognito.com` for your variable, and then `ENV['COGNITO_USER_POOL_DOMAIN']` in your code
  - an App Client set up for your user pool, exposing at least `openid` and `email`. (Don't set up your user pool client application with a 'Client Secret' because at the moment they don't work and don't allow you to authenticate.)
- - an environment variable on your dev machine which contains your App Client ID - something like `COGNITO_CLIENT_ID=your_app_client_id` for your variable, and then `ENV['COGNITO_CLIENT_ID']` in your code
+ - a config variable on your dev machine which contains your domain - something like `COGNITO_USER_POOL_DOMAIN=https://your_user_pool_domain.auth.us-west-1.amazoncognito.com` for your variable, and then `Rails.configuration.local_settings['COGNITO_USER_POOL_DOMAIN']` in your code (if using Rails of course)
+ - a config variable on your dev machine which contains your App Client ID - something like `COGNITO_CLIENT_ID=your_app_client_id` for your variable, and then `Rails.configuration.local_settings['COGNITO_CLIENT_ID']` in your code (if using Rails of course)
 
 ## Usage
 
@@ -27,9 +27,9 @@ Here's an example for adding the middleware to a Rails app in `config/initialize
 
 ```ruby
 Rails.application.config.middleware.use OmniAuth::Builder do
-  provider :cognito_oauth2, ENV['COGNITO_CLIENT_ID'], scope: [:openid, :email],
+  provider :cognito_oauth2, 'MY_COGNITO_CLIENT_ID', scope: [:openid, :email],
     setup: lambda{ |env|
-      env['omniauth.strategy'].options[:client_options].site = ENV['COGNITO_USER_POOL_DOMAIN']
+      env['omniauth.strategy'].options[:client_options].site = 'MY_COGNITO_USER_POOL_DOMAIN'
     }
 end
 ```
@@ -43,9 +43,9 @@ You can now access the OmniAuth Cognito OAuth2 URL: `/auth/cognito_oauth2`
 First define your application id and secret in `config/initializers/devise.rb`.
 
 ```ruby
-config.omniauth :cognito_oauth2, ENV['COGNITO_CLIENT_ID'], scope: [:openid, :email],
+config.omniauth :cognito_oauth2, 'MY_COGNITO_CLIENT_ID', scope: [:openid, :email],
   setup: lambda{ |env|
-    env['omniauth.strategy'].options[:client_options].site = ENV['COGNITO_USER_POOL_DOMAIN']
+    env['omniauth.strategy'].options[:client_options].site = 'MY_COGNITO_USER_POOL_DOMAIN'
   }
 ```
 

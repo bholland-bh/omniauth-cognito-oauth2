@@ -11,12 +11,12 @@ Gem::Specification.new do |spec|
   spec.authors = ['Adam Wenham']
   spec.email = ['adamwenham64@gmail.com']
 
-  spec.summary = 'An Oauth2 strategy that plays well both alone and with devise, based on the google-oauth2 version'
+  spec.summary = 'An Oauth2 strategy for AWS Cognito that plays well both alone and with devise, based on the google-oauth2 version'
   spec.homepage = 'https://gitlab.com/felixfortis/omniauth-cognito-oauth2'
   spec.license = 'MIT'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
 
-  spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
+  spec.metadata['allowed_push_host'] = "https://rubygems.org"
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
@@ -28,7 +28,6 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'jwt', '~> 2.2'
   spec.add_runtime_dependency 'omniauth-oauth2', '~> 1.6'
 
   spec.add_development_dependency 'pry', '~> 0.12'
