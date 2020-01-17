@@ -1,6 +1,6 @@
 # Omniauth::Cognito::Oauth2
 
-Oauth2 strategy for AWS Cognito
+[Ruby gem Oauth2 strategy for AWS Cognito](https://rubygems.org/gems/omniauth-cognito-oauth2)
 
 ## Installation
 
