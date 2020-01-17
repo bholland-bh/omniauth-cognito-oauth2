@@ -57,13 +57,13 @@ config.omniauth :cognito_oauth2, 'MY_COGNITO_CLIENT_ID', scope: [:openid, :email
 
 NOTE: If you are using this gem with devise with above snippet in `config/initializers/devise.rb` then do not create `config/initializers/omniauth.rb` which will conflict with devise configurations.
 
-Then add the following to 'config/routes.rb' so the callback routes are defined.
+Then add the following to `config/routes.rb` so the callback routes are defined.
 
 ```ruby
 devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 ```
 
-Make sure your model is omniauthable. Generally this is "/app/models/user.rb"
+Make sure your model is omniauthable. Generally this is `/app/models/user.rb`
 
 ```ruby
 devise :omniauthable, omniauth_providers: [:cognito_oauth2]
@@ -121,9 +121,9 @@ An overview is available at https://github.com/plataformatec/devise/wiki/OmniAut
 You can configure several options, which you pass in to the `provider` method via a hash:
 
 * `scope`: A comma-separated list of permissions you want to request from the user. See the [AWS Cognito docs](https://aws.amazon.com/blogs/mobile/understanding-amazon-cognito-user-pool-oauth-2-0-grants/) for a full list of available permissions. Caveats:
-  * The `openid` and `email` scopes are used by default. By defining your own `scope`, you override these defaults.
+  * The `openid` and `email` scopes are used by default. By defining your own `scope`, you override these defaults
 
-* `redirect_uri`: Override the redirect_uri used by the gem.
+* `redirect_uri`: Override the redirect_uri used by the gem. The default is to redirect back to your app and then follow the flow from your `cognito_oauth2` callback URL
 
 ## Development
 
