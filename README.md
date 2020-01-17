@@ -32,6 +32,8 @@ You will need:
 Here's an example for adding the middleware to a Rails app in `config/initializers/omniauth.rb`:
 
 ```ruby
+require 'omniauth_cognito_oauth2'
+
 Rails.application.config.middleware.use OmniAuth::Builder do
   provider :cognito_oauth2, 'MY_COGNITO_CLIENT_ID', scope: [:openid, :email],
     setup: lambda{ |env|
@@ -49,10 +51,15 @@ You can now access the OmniAuth Cognito OAuth2 URL: `/auth/cognito_oauth2`
 First define your client id and user pool domain in `config/initializers/devise.rb`.
 
 ```ruby
-config.omniauth :cognito_oauth2, 'MY_COGNITO_CLIENT_ID', scope: [:openid, :email],
-  setup: lambda{ |env|
-    env['omniauth.strategy'].options[:client_options].site = 'MY_COGNITO_USER_POOL_DOMAIN'
-  }
+require 'omniauth_cognito_oauth2'
+
+Devise.setup do |config|
+  #...
+  config.omniauth :cognito_oauth2, 'MY_COGNITO_CLIENT_ID', scope: [:openid, :email],
+    setup: lambda{ |env|
+      env['omniauth.strategy'].options[:client_options].site = 'MY_COGNITO_USER_POOL_DOMAIN'
+    }
+end
 ```
 
 NOTE: If you are using this gem with devise with above snippet in `config/initializers/devise.rb` then do not create `config/initializers/omniauth.rb` which will conflict with devise configurations.
