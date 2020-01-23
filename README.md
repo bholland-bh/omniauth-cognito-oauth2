@@ -9,6 +9,7 @@ Add this line to your application's Gemfile:
 ```ruby
 gem 'omniauth-cognito-oauth2'
 ```
+
 Then `bundle install`
 
 ## Setup
@@ -16,7 +17,7 @@ Then `bundle install`
 You will need:
 
  - An AWS Cognito user pool
- - A domain setup for your user pool
+ - A domain setup for your user pool - once set it will look something like `https://your_user_pool_domain.auth.us-west-1.amazoncognito.com`
  - An App Client set up for your user pool:
    - Callback URL will look something like `https://localhost:3000/users/auth/cognito_oauth2/callback` (standard with a Devise User model)
    - Signout URL will look something like `https://localhost:3000/users/sign_out` (standard with a Devise User model)
@@ -24,10 +25,12 @@ You will need:
    - Check at least the `openid` and `email` OAuth scopes
    - *Don't* set up your App Client with a 'Client Secret' because at the moment they don't work and won't allow you to authenticate.
  - For development, you'll need to be running your app with SSL enabled, because Cognito user pool App Client callback and signout URLs only allow HTTPS URLs. This unaffiliated [blog post](https://madeintandem.com/blog/rails-local-development-https-using-self-signed-ssl-certificate/) details steps on obtaining a self-signed SSL certificate and running rails in SSL mode while referencing the cert
- - A config variable on your dev machine which contains your domain - something like `COGNITO_USER_POOL_DOMAIN=https://your_user_pool_domain.auth.us-west-1.amazoncognito.com` for your variable, and then `Rails.configuration.local_settings['COGNITO_USER_POOL_DOMAIN']` in your code (if using Rails)
- - A config variable on your dev machine which contains your App Client ID - something like `COGNITO_CLIENT_ID=your_app_client_id` for your variable, and then `Rails.configuration.local_settings['COGNITO_CLIENT_ID']` in your code (if using Rails)
+ - A env/config variable which contains your domain
+ - A env/config variable which contains your App Client ID
 
 ## Usage
+
+Note: More info at https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview
 
 Here's an example for adding the middleware to a Rails app in `config/initializers/omniauth.rb`:
 
@@ -42,7 +45,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 end
 ```
 
-Since Cognito has many different client sites, we are using a lambda to dynamically set the site that you wish to authenticate against. This will be the domain you have setup for your user pool. There is more info in the Authorization Code Grant section in the AWS docs [here](https://aws.amazon.com/blogs/mobile/understanding-amazon-cognito-user-pool-oauth-2-0-grants/).
+Since Cognito may have many different Oauth client sites, we are using a lambda to dynamically set the site that you wish to authenticate against. This will be the domain you have setup for your user pool. There is more info in the Authorization Code Grant section in the AWS docs [here](https://aws.amazon.com/blogs/mobile/understanding-amazon-cognito-user-pool-oauth-2-0-grants/).
 
 You can now access the OmniAuth Cognito OAuth2 URL: `/auth/cognito_oauth2`
 
@@ -62,18 +65,12 @@ Devise.setup do |config|
 end
 ```
 
-NOTE: If you are using this gem with devise with above snippet in `config/initializers/devise.rb` then do not create `config/initializers/omniauth.rb` which will conflict with devise configurations.
+NOTE: If you use the above snippet in `config/initializers/devise.rb` then do not create `config/initializers/omniauth.rb`, as it will conflict with devise config.
 
 Then add the following to `config/routes.rb` so the callback routes are defined.
 
 ```ruby
 devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
-```
-
-Make sure your model is omniauthable. Generally this is `/app/models/user.rb`
-
-```ruby
-devise :omniauthable, omniauth_providers: [:cognito_oauth2]
 ```
 
 Then make sure your callbacks controller is setup.
@@ -99,15 +96,21 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 end
 ```
 
-and bind to or create the user
+Now add the `omniauthable` and `omniauth_providers` devise options to your user model, along with a method for binding to or creating the user.
 
 ```ruby
-def self.from_omniauth(auth)
-  where(email: auth.info.email, uid: auth.uid, provider: "cognito_oauth2").first_or_create! do |user|
-    user.email = auth.info.email
-    user.password = Devise.friendly_token[0,20]
-    user.provider = "cognito_oauth2"
-    user.uid = auth.uid
+class User < ApplicationRecord
+  devise :omniauthable, omniauth_providers: [:cognito_oauth2]
+
+#...
+
+  def self.from_omniauth(auth)
+    where(email: auth.info.email, uid: auth.uid, provider: "cognito_oauth2").first_or_create! do |user|
+      user.email = auth.info.email
+      user.password = Devise.friendly_token[0,20]
+      user.provider = "cognito_oauth2"
+      user.uid = auth.uid
+    end
   end
 end
 ```
@@ -121,26 +124,20 @@ Devise will automatically generate a link for you on their default signup/login 
 <%= link_to "Sign in with Cognito", user_omniauth_authorize_path(:cognito_oauth2) %>
 ```
 
-An overview is available at https://github.com/plataformatec/devise/wiki/OmniAuth:-Overview
+Check `rake routes` if you are unsure.
 
 ## Configuration
 
 You can configure several options, which you pass in to the `provider` method via a hash:
 
 * `scope`: A comma-separated list of permissions you want to request from the user. See the [AWS Cognito docs](https://aws.amazon.com/blogs/mobile/understanding-amazon-cognito-user-pool-oauth-2-0-grants/) for a full list of available permissions. Caveats:
-  * The `openid` and `email` scopes are used by default. By defining your own `scope`, you override these defaults
+  * The `openid` and `email` scopes are needed by default. By defining your own `scope`, you override these defaults
 
-* `redirect_uri`: Override the redirect_uri used by the gem. The default is to redirect back to your app and then follow the flow from your `cognito_oauth2` callback URL
-
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+* `redirect_uri`: Override the default redirect_uri used by the gem. The default is to redirect back to your app and then follow the flow from your `cognito_oauth2` callback URL
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://gitlab.com/felixfortis/omniauth-cognito-oauth2.
+Bug reports and pull requests are welcome on Gitlab at https://gitlab.com/felixfortis/omniauth-cognito-oauth2.
 
 
 ## License
